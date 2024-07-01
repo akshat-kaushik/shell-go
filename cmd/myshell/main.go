@@ -14,7 +14,7 @@ func main() {
 		fmt.Fprint(os.Stdout, "$ ")
 		input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 		command:=input[:len(input)-1]
-		if command=="exit"{
+		if command=="exit 0"{
 			os.Exit(0)
 			break;
 		}
