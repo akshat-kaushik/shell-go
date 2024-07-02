@@ -29,13 +29,13 @@ func main() {
 			for _, path := range dirs {
 				fp := filepath.Join(path, inputarr[1])
 				if _, err := os.Stat(fp); err == nil {
-					fmt.Fprint(os.Stdout, inputarr[1]+" is "+fp)
+					fmt.Fprint(os.Stdout, inputarr[1]+" is "+fp+"\n")
 					exist = true
 					break
 				}
 			}
 			if !exist {
-				fmt.Fprint(os.Stdout, inputarr[1]+": not found")
+				fmt.Fprint(os.Stdout, inputarr[1]+": not found\n")
 			}
 
 		default:
