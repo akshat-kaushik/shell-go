@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
 )
 
 func main() {
-	validcmds := []string{"echo", "exit", "type", "ls"}
-	validLocalcmds:=[]string{"abcd"}
+	// validcmds := []string{"echo", "exit", "type", "ls"}
+
 	var path = os.Getenv("PATH")
 	var dirs = strings.Split(path, ":")
 
@@ -26,12 +25,17 @@ func main() {
 		case "exit":
 			os.Exit(0)
 		case "type":
-			if slices.Contains(validcmds, inputarr[1]) {
-				fmt.Fprint(os.Stdout, inputarr[1]+" is"+ filepath.Join(dirs[0],inputarr[1])+"\n")
-			} else if slices.Contains(validLocalcmds,inputarr[1]) {
-				fmt.Fprint(os.Stdout, inputarr[1]+" is"+ filepath.Join(dirs[1],inputarr[1])+"\n")
-			}else{
-				fmt.Fprint(os.Stdout,inputarr[1]+": not found\n")
+			exist := false
+			for _, path := range dirs {
+				fp := filepath.Join(path, inputarr[1])
+				if _, err := os.Stat(fp); err == nil {
+					fmt.Fprint(os.Stdout, inputarr[1]+" is "+fp)
+					exist = true
+					break
+				}
+			}
+			if !exist {
+				fmt.Fprint(os.Stdout, inputarr[1]+": not found")
 			}
 
 		default:
