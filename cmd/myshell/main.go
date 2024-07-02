@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
 func main() {
-	// validcmds := []string{"echo", "exit", "type", "ls"}
+
+	builtin := []string{"echo", "exit", "type"}
 
 	var path = os.Getenv("PATH")
 	var dirs = strings.Split(path, ":")
@@ -25,6 +27,10 @@ func main() {
 		case "exit":
 			os.Exit(0)
 		case "type":
+			if slices.Contains(builtin, inputarr[1]) {
+				fmt.Fprintf(os.Stdout,inputarr[1]+" is a shell builtin\n")
+				break
+			}
 			exist := false
 			for _, path := range dirs {
 				fp := filepath.Join(path, inputarr[1])
