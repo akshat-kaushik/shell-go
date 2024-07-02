@@ -22,9 +22,9 @@ func main() {
 			os.Exit(0)
 		case "type":
 			if slices.Contains(validcmds,inputarr[1]){
-				fmt.Fprint(os.Stdout,command+" is a shell builtin")
+				fmt.Fprint(os.Stdout,command+" is a shell builtin\n")
 			}else{
-				fmt.Fprint(os.Stdout,command+" :not found")
+				fmt.Fprint(os.Stdout,command+" :not found\n")
 			}
 
 		default:
