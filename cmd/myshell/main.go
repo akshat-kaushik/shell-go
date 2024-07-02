@@ -24,7 +24,7 @@ func main() {
 			if slices.Contains(validcmds,inputarr[1]){
 				fmt.Fprint(os.Stdout,inputarr[1]+" is a shell builtin\n")
 			}else{
-				fmt.Fprint(os.Stdout,inputarr[1]+" :not found\n")
+				fmt.Fprint(os.Stdout,inputarr[1]+" :not found")
 			}
 
 		default:
