@@ -4,48 +4,100 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
 )
 
+type Shell struct {
+	validCmds []string
+	builtin   []string
+	pathDirs  []string
+}
+
+func NewShell() *Shell {
+	path := os.Getenv("PATH")
+	dirs := strings.Split(path, ":")
+	return &Shell{
+		validCmds: []string{"echo", "exit", "type"},
+		builtin:   []string{"echo", "exit", "type"},
+		pathDirs:  dirs,
+	}
+}
+
+func (sh *Shell) ExecuteCommand(input string) {
+	input = strings.TrimSpace(input)
+	params := strings.Split(input, " ")
+
+	if len(params) == 0 {
+		return
+	}
+
+	command := params[0]
+
+	switch command {
+	case "echo":
+		sh.handleEcho(params[1:])
+	case "exit":
+		os.Exit(0)
+	case "type":
+		sh.handleType(params)
+	default:
+		sh.handleExternalCommand(command, params[1:])
+	}
+}
+
+func (sh *Shell) handleEcho(args []string) {
+	fmt.Println(strings.Join(args, " "))
+}
+
+func (sh *Shell) handleType(params []string) {
+	if len(params) < 2 {
+		fmt.Println("type: missing operand")
+		return
+	}
+
+	cmd := params[1]
+	if slices.Contains(sh.builtin, cmd) {
+		fmt.Printf("%s is a shell builtin\n", cmd)
+	} else {
+		sh.findCommandInPath(cmd)
+	}
+}
+
+func (sh *Shell) findCommandInPath(cmd string) {
+	for _, dir := range sh.pathDirs {
+		fp := filepath.Join(dir, cmd)
+		if _, err := os.Stat(fp); err == nil {
+			fmt.Printf("%s is %s\n", cmd, fp)
+			return
+		}
+	}
+	fmt.Printf("%s: not found\n", cmd)
+}
+
+func (sh *Shell) handleExternalCommand(command string, args []string) {
+	cmd := exec.Command(command, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("%s: command not found\n", command)
+	}
+}
+
 func main() {
-
-	builtin := []string{"echo", "exit", "type"}
-
-	var path = os.Getenv("PATH")
-	var dirs = strings.Split(path, ":")
+	shell := NewShell()
+	scanner := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Fprint(os.Stdout, "$ ")
-		input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		inputarr := strings.Split(strings.TrimSpace(input), " ")
-		command := inputarr[0]
-		switch command {
-		case "echo":
-			fmt.Fprint(os.Stdout, strings.Join(inputarr[1:], " ")+"\n")
-		case "exit":
-			os.Exit(0)
-		case "type":
-			if slices.Contains(builtin, inputarr[1]) {
-				fmt.Fprintf(os.Stdout,inputarr[1]+" is a shell builtin\n")
-				break
-			}
-			exist := false
-			for _, path := range dirs {
-				fp := filepath.Join(path, inputarr[1])
-				if _, err := os.Stat(fp); err == nil {
-					fmt.Fprint(os.Stdout, inputarr[1]+" is "+fp+"\n")
-					exist = true
-					break
-				}
-			}
-			if !exist {
-				fmt.Fprint(os.Stdout, inputarr[1]+": not found\n")
-			}
-
-		default:
-			fmt.Fprint(os.Stdout, command+": command not found\n")
+		fmt.Print("$ ")
+		input, err := scanner.ReadString('\n')
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
+			continue
 		}
+		shell.ExecuteCommand(input)
 	}
 }
