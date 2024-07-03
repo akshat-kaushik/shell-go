@@ -91,7 +91,7 @@ func (sh *Shell) handleExternalCommand(command string, args []string) {
  func (sh *Shell) handlePwd(){
 	dir,err:=os.Getwd()
 	if err==nil{
-		fmt.Printf("%s",dir)
+		fmt.Printf("%s\n",dir)
 	}
  }
 
