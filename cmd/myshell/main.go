@@ -43,6 +43,8 @@ func (sh *Shell) ExecuteCommand(input string) {
 		os.Exit(0)
 	case "type":
 		sh.handleType(params)
+	case "pwd":
+		sh.handlePwd()
 	default:
 		sh.handleExternalCommand(command, params[1:])
 	}
@@ -86,6 +88,12 @@ func (sh *Shell) handleExternalCommand(command string, args []string) {
 		fmt.Printf("%s: command not found\n", command)
 	}
 }
+ func (sh *Shell) handlePwd(){
+	dir,err:=os.Getwd()
+	if err==nil{
+		fmt.Printf("%s",dir)
+	}
+ }
 
 func main() {
 	shell := NewShell()
