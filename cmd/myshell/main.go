@@ -21,7 +21,7 @@ func NewShell() *Shell {
 	dirs := strings.Split(path, ":")
 	return &Shell{
 		validCmds: []string{"echo", "exit", "type"},
-		builtin:   []string{"echo", "exit", "type"},
+		builtin:   []string{"echo", "exit", "type","pwd"},
 		pathDirs:  dirs,
 	}
 }
