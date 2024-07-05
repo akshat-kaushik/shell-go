@@ -100,9 +100,8 @@ func (sh *Shell) handleExternalCommand(command string, args []string) {
  func (sh *Shell) handleCd(path string){
 	if slices.Contains(sh.pathDirs,path){
 		os.Chdir(path)
-	}else{
-		fmt.Printf("cd: %s: No such file or directory\n",path)
 	}
+	
  }
 
 func main() {
