@@ -107,7 +107,7 @@ func (sh *Shell) handleCd(path string) {
 
 	err = os.Chdir(path)
 	if err != nil {
-		fmt.Printf("cd: %s: %v\n", path, err)
+		fmt.Printf("cd: %s: No such file or directory", path)
 	}
 }
 
