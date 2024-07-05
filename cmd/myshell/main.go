@@ -21,7 +21,7 @@ func NewShell() *Shell {
 	dirs := strings.Split(path, ":")
 	return &Shell{
 		validCmds: []string{"echo", "exit", "type"},
-		builtin:   []string{"echo", "exit", "type","pwd"},
+		builtin:   []string{"echo", "exit", "type", "pwd"},
 		pathDirs:  dirs,
 	}
 }
@@ -90,19 +90,26 @@ func (sh *Shell) handleExternalCommand(command string, args []string) {
 		fmt.Printf("%s: command not found\n", command)
 	}
 }
- func (sh *Shell) handlePwd(){
-	dir,err:=os.Getwd()
-	if err==nil{
-		fmt.Printf("%s\n",dir)
+func (sh *Shell) handlePwd() {
+	dir, err := os.Getwd()
+	if err == nil {
+		fmt.Printf("%s\n", dir)
 	}
- }
+}
 
- func (sh *Shell) handleCd(path string){
-	if slices.Contains(sh.pathDirs,path){
-		os.Chdir(path)
+func (sh *Shell) handleCd(path string) {
+
+	fileInfo, err := os.Stat(path)
+	if err != nil || !fileInfo.IsDir() {
+		fmt.Printf("cd: %s: %v\n", path, err)
+		return
 	}
-	
- }
+
+	err = os.Chdir(path)
+	if err != nil {
+		fmt.Printf("cd: %s: %v\n", path, err)
+	}
+}
 
 func main() {
 	shell := NewShell()
