@@ -99,15 +99,11 @@ func (sh *Shell) handlePwd() {
 
 func (sh *Shell) handleCd(path string) {
 
-	fileInfo, err := os.Stat(path)
-	if err != nil || !fileInfo.IsDir() {
-		fmt.Printf("cd: %s: %v\n", path, err)
-		return
-	}
 
-	err = os.Chdir(path)
+
+	err:= os.Chdir(path)
 	if err != nil {
-		fmt.Printf("cd: %s: No such file or directory", path)
+		fmt.Printf("cd: %s: No such file or directory\n", path)
 	}
 }
 
