@@ -45,6 +45,8 @@ func (sh *Shell) ExecuteCommand(input string) {
 		sh.handleType(params)
 	case "pwd":
 		sh.handlePwd()
+	case "cd":
+		sh.handleCd(params[1])
 	default:
 		sh.handleExternalCommand(command, params[1:])
 	}
@@ -92,6 +94,14 @@ func (sh *Shell) handleExternalCommand(command string, args []string) {
 	dir,err:=os.Getwd()
 	if err==nil{
 		fmt.Printf("%s\n",dir)
+	}
+ }
+
+ func (sh *Shell) handleCd(path string){
+	if slices.Contains(sh.pathDirs,path){
+		os.Chdir(path)
+	}else{
+		fmt.Printf("cd: %s: No such file or directory",path)
 	}
  }
 
