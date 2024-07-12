@@ -99,7 +99,7 @@ func (sh *Shell) handlePwd() {
 
 func (sh *Shell) handleCd(path string) {
 	if path=="~"{
-		os.Chdir("/home/user")
+		path=os.Getenv("HOME")
 	}
 	err:= os.Chdir(path)
 	if err != nil {
