@@ -52,8 +52,10 @@ func (sh *Shell) ExecuteCommand(input string) {
 	}
 }
 
+
 func (sh *Shell) handleEcho(args []string) {
 	fmt.Println(strings.Join(args, " "))
+	
 }
 
 func (sh *Shell) handleType(params []string) {
@@ -98,9 +100,6 @@ func (sh *Shell) handlePwd() {
 }
 
 func (sh *Shell) handleCd(path string) {
-
-
-
 	err:= os.Chdir(path)
 	if err != nil {
 		fmt.Printf("cd: %s: No such file or directory\n", path)
